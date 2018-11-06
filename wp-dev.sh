@@ -50,38 +50,80 @@ function bash {
         wordpress:cli bash
 }
 
+function release {
+    # check for local changes
+    if [[ `git status --porcelain` ]]; then
+        echo "Detected local changes, please commit before release"
+        exit 1
+    fi
+
+    # ask for version
+    echo "Latest Tag: `git describe --abbrev=0 --tags`"
+    read -p 'New Version (without prefix, semver only): ' version
+    
+    # update version in source
+    echo "Setting version in styles.css and funtions.php"
+    sed -i.bak "s/Version:.*/Version: ${version}/g" src/style.css 
+    sed -i.bak "s/initLibsAndMainAssets(.*/initLibsAndMainAssets('${version}');/g" src/functions.php
+    rm src/style.css.bak
+    rm src/functions.php.bak
+
+    echo ""
+    echo "Committing files...."
+    git add src/style.css src/functions.php
+    git commit -m "Bump version to ${version}"
+    
+    #create tag and github release
+    echo ""
+    echo "Pushing tag..."
+    git tag "release-${version}"
+    git push --tags
+
+    #zip current src
+    echo ""
+    echo "Creating zip of theme"
+    mkdir -p target
+    cd src
+    zip -q -r ../target/release-$version.zip *
+    cd ..
+    echo "Pushing github release"
+    hub release create -m "v${version}" -a "target/release-${version}.zip" release-$version
+    echo ""
+    echo "Done, latest release: `hub release -L 1`"
+}   
+
 
 function main {
-    if [ $1 = "start" ]
-    then
-        start
-    fi
-
-    if [ $1 = "stop" ]
-    then
-        stop
-    fi
-
-    if [ $1 = "clean" ]
-    then
-        clean   
-    fi
-
-    if [ $1 = "run" ]
-    then
-       run $2
-    fi
-
-    if [ $1 = "cli" ]
-    then
-        cli $2 $3 
-        exit;
-    fi
-
-    if [ $1 = "bash" ]
-    then
-        bash
-    fi
+    case "$1" in
+        start)
+            start
+            ;;
+         
+        stop)
+            stop
+            ;;
+         
+        clean)
+            clean
+            ;;
+        run)
+            run $2
+            ;;
+        cli)
+            cli $2 $3 
+            ;;
+        bash)
+            bash
+            ;;  
+        release)
+            release
+            ;;        
+        *)
+            echo $"Usage: wp-dev {start|stop|clean|run|cli|bash}"
+            echo ""
+            exit 1
+ 
+    esac    
 }
 
 main $1 $2 ${@:3}
