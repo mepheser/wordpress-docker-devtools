@@ -1,0 +1,43 @@
+version: '3.3'
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+     environment:
+       MYSQL_ROOT_PASSWORD: wordpressdocker
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+
+   phpmyadmin:
+     image: phpmyadmin/phpmyadmin
+     links:
+       - db
+     ports:
+       - 8001:80
+     environment:
+       MYSQL_USERNAME: root
+       MYSQL_ROOT_PASSWORD: wordpressdocker
+
+   wordpress:
+     image: wordpress:latest
+     depends_on:
+       - db
+     ports:
+       - "8000:80"
+     environment:
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: wordpress
+     volumes:
+       - wp_data:/var/www/html
+       - ./src:/var/www/html/wp-content/themes/benlovesmari
+       - ./dev/lib:/tmp/lib
+       - ./dev/cli:/tmp/cli
+       - ./dev/test-data:/tmp/test-data:rw
+       - ./dev/lib/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+
+volumes:
+    db_data:
+    wp_data:
