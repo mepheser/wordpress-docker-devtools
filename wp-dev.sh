@@ -3,7 +3,7 @@
 DEV_HOME="$(dirname "$(readlink "$0")")"
 COMPOSE_FILE="$DEV_HOME/docker-compose.yml"
 WORKING_DIRECTORY="${PWD}"
-CONTAINER_PRAEFIX="${PWD##*/}"
+export CONTAINER_PRAEFIX="${PWD##*/}"
 WORDPRESS_CONTAINER="${CONTAINER_PRAEFIX}_wordpress_1"
 
 echo "------------------------------"

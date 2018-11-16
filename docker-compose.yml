@@ -22,6 +22,7 @@ services:
 
    wordpress:
      image: wordpress:latest
+     container_name: ${CONTAINER_PRAEFIX}_wordpress_1
      depends_on:
        - db
      ports:
