@@ -92,38 +92,4 @@ function release {
     echo "Done, latest release: `hub release -L 1`"
 }   
 
-
-function main {
-    case "$1" in
-        start)
-            start
-            ;;
-         
-        stop)
-            stop
-            ;;
-         
-        clean)
-            clean
-            ;;
-        run)
-            run $2
-            ;;
-        cli)
-            cli $2 $3 
-            ;;
-        bash)
-            bash
-            ;;  
-        release)
-            release
-            ;;        
-        *)
-            echo $"Usage: wp-dev {start|stop|clean|run|cli|bash}"
-            echo ""
-            exit 1
- 
-    esac    
-}
-
 main $1 $2 ${@:3}

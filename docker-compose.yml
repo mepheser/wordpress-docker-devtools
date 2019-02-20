@@ -32,7 +32,7 @@ services:
        WORDPRESS_DB_PASSWORD: wordpress
      volumes:
        - wp_data:/var/www/html
-       - ./src:/var/www/html/wp-content/themes/dev
+       - ./public:/var/www/html/wp-content/themes/dev
        - ./dev/lib:/tmp/lib
        - ./dev/cli:/tmp/cli
        - ./dev/test-data:/tmp/test-data:rw
