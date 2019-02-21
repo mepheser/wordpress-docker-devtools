@@ -1,4 +1,4 @@
-# wp-dev
+# Wordpress theme docker runner
 Simple docker based dev runner for wordpress theme development. Ships a docker-compose.yml that provides
 * wordpress on port 8000 with mounted dev theme
 * phpmyadmin on port 8001
@@ -18,13 +18,11 @@ project
 │   └───cli -> /tmp/cli (init scripts, including wp cli calls)
 │   └───lib -> /tmp/lib (optional static dependencies)
 │   └───test-data /tmp/test-data (optional wp export xmls)
-│   
-└───public -> /var/www/html/wp-content/themes/dev (the theme)
-    │   index.php
-    │   functions.php
-    │   style.css
-    │   ... all other theme files
+└───src (theme source code)
+└───public -> /var/www/html/wp-content/themes/dev (compiled theme, mounted in wordpress)
 ```
+
+Make sure wordpress ready theme gets built into `public`
 
 ## Commands
 
